@@ -45,7 +45,7 @@ class Header extends Component {
           anchor="right"
           open={this.state.drawerIsOpened}
           onClose={this.toggleDrawer(false)}>
-            <SlideFilters config={this.props.config} onChanges={this.props.onChanges}/>
+            <SlideFilters config={this.props.config} onChanges={this.props.onChanges} close={this.toggleDrawer(false)}/>
         </Drawer>
       </div>
     );
