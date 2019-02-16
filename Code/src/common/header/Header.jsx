@@ -37,7 +37,7 @@ class Header extends Component {
           <div className="opened-module-title">
             {this.state.title}
           </div>
-          <Button className="menu-toggle" onClick={this.toggleDrawer()}>
+          <Button className="menu-toggle" onClick={this.toggleDrawer(true)}>
             <SettingsIcon aria-label="Settings"/>
           </Button>
         </nav>
