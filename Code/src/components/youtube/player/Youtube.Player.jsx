@@ -9,15 +9,12 @@ class YoutubePlayer extends Component {
     const id = window.location.href
       .replace(/^.*\//g, '')
       .replace(/^.*\..*/g, '');
-    const iframe = '<iframe title="Video"' +
-      '        width="100%"' +
-      '        height="100%"' +
-      '        src={https://www.youtube.com/embed/'+id+'?autoplay=1}'+
-      '        frameBorder="0"'+
-      '        allowFullScreen/>';
+
+
+    const iFrame=`<iframe id="embedded-video" title="Video" width="100%" height="100%" src="https://www.youtube.com/embed/${id}?autoplay=1" frameBorder="0" allowFullScreen/>" />`;
     setTimeout(() => {
       if (document.getElementsByClassName('frame-block')[0]) {
-        document.getElementsByClassName('frame-block')[0].innerHTML = iframe;
+        document.getElementsByClassName('frame-block')[0].innerHTML = iFrame;
       }
     }, 1000);
 
