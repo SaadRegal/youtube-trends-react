@@ -60,19 +60,19 @@ function renderInput(inputProps) {
 
 function renderSuggestion({suggestion, index, itemProps, highlightedIndex, selectedItem}) {
   const isHighlighted = highlightedIndex === index;
-  const isSelected = (selectedItem || '').indexOf(suggestion.name) > -1;
-
+      let isSelected = (selectedItem?selectedItem.name:'').indexOf(suggestion.name) > -1;
   return (
     <MenuItem
       {...itemProps}
-      key={suggestion.name}
+      key={suggestion.code || suggestion.id}
       selected={isHighlighted}
       component="div"
       style={{
-        fontWeight: isSelected ? 500 : 400
+        fontWeight: isSelected ? 'bold' : 400
       }}
     >
       {suggestion.name}
+
     </MenuItem>
   );
 }
@@ -82,12 +82,23 @@ renderSuggestion.propTypes = {
   index           : PropTypes.number,
   itemProps       : PropTypes.object,
   selectedItem    : PropTypes.string,
-  suggestion      : PropTypes.shape({name: PropTypes.string}).isRequired
+  suggestion      : PropTypes.shape({name: PropTypes.string,code:PropTypes.string}).isRequired
 };
 
 
 class SlideFilters extends Component {
+
+     countryChange = (selected) => {
+        this.props.config.defaultRegion = selected.code;
+        this.props.onChanges();
+    };
+    categoryChange = (selected) => {
+        this.props.config.defaultCategoryId = selected.id;
+        this.props.onChanges();
+    };
+
   render() {
+
     const videosToLoadChange = (val) => {
       this.props.config.maxVideosToLoad = val;
       this.props.onChanges();
@@ -100,14 +111,15 @@ class SlideFilters extends Component {
             <CloseIcon aria-label="Close"/>
           </Button>
         </h3>
-        <Downshift id="countrySelect">
+        <Downshift id="countrySelect" onChange={this.countryChange} itemToString={item => (item ? item.name : '')}>
           {({
               getInputProps,
               getItemProps,
               getMenuProps,
               highlightedIndex,
               isOpen,
-              selectedItem
+              selectedItem,
+              inputValue
             }) => (
             <div>
               {renderInput({
@@ -118,11 +130,11 @@ class SlideFilters extends Component {
               <div {...getMenuProps()}>
                 {isOpen ? (
                   <Paper square>
-                    {countryList.map((suggestion, index) =>
+                    {countryList.filter(item => !inputValue || item.name.toLowerCase().includes(inputValue.toLowerCase())).map((suggestion, index) =>
                       renderSuggestion({
                         suggestion,
                         index,
-                        itemProps: getItemProps({item: suggestion.name}),
+                        itemProps: getItemProps({item: suggestion}),
                         highlightedIndex,
                         selectedItem
                       })
@@ -134,14 +146,15 @@ class SlideFilters extends Component {
           )}
         </Downshift>
         <div className="divider"/>
-        <Downshift id="categorySelect">
+        <Downshift id="categorySelect" onChange={this.categoryChange} itemToString={item => (item ? item.name : '')}>
           {({
               getInputProps,
               getItemProps,
               getMenuProps,
               highlightedIndex,
               isOpen,
-              selectedItem
+              selectedItem,
+              inputValue
             }) => (
             <div>
               {renderInput({
@@ -152,11 +165,11 @@ class SlideFilters extends Component {
               <div {...getMenuProps()}>
                 {isOpen ? (
                   <Paper square>
-                    {categoriesList.map((suggestion, index) =>
+                    {categoriesList.filter(item => !inputValue || item.name.toLowerCase().includes(inputValue.toLowerCase())).map((suggestion, index) =>
                       renderSuggestion({
                         suggestion,
                         index,
-                        itemProps: getItemProps({item: suggestion.name}),
+                        itemProps: getItemProps({item: suggestion}),
                         highlightedIndex,
                         selectedItem
                       })
