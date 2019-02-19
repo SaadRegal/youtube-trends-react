@@ -28,6 +28,10 @@ class Header extends Component {
   };
 
   render() {
+    const activeRoute= window.location.href
+        .replace(/^.*\//g, '')
+        .replace(/^.*\..*/g, '');
+    // alert(activeRoute);
     return (
       <div id="page-header">
         <nav>
@@ -37,7 +41,7 @@ class Header extends Component {
           <div className="opened-module-title">
             {this.state.title}
           </div>
-          <Button className="menu-toggle" onClick={this.toggleDrawer(true)}>
+          <Button style={{display:activeRoute !== 'youtube'?'none':void 0}} className="menu-toggle" onClick={this.toggleDrawer(true)}>
             <SettingsIcon aria-label="Settings"/>
           </Button>
         </nav>
