@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 import React, {Component} from 'react';
 import Axios from 'axios';
 import MovieIcon from '@material-ui/icons/Movie';
@@ -7,7 +7,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import WarningIcon from '@material-ui/icons/Warning';
 import PropTypes from 'prop-types';
-
+import { appConfig } from '../../config';
 import {YoutubeService} from '../../services/youtube/Youtube';
 import './Youtube.scss';
 
@@ -22,13 +22,24 @@ class Youtube extends Component {
         };
     }
 
+
     componentWillMount() {
         this.props.setTitle('YOUTUBE');
         this.props.onChanges(() => this.loadVideos());
     }
+    componentDidMount(){
+        let count=appConfig.maxVideosToLoad;
+        window.onscroll = async ()=> {
 
-    async loadVideos() {
-        Axios.all(await service.getTrendingVideos(this.props.config.maxVideosToLoad))
+            if ((window.innerHeight + window.scrollY) === document.body.offsetHeight) {
+                count=count+appConfig.maxVideosToLoad;
+                await this.loadVideos(count);
+            }
+        };
+    }
+
+    async loadVideos(count=this.props.config.maxVideosToLoad) {
+        Axios.all(await service.getTrendingVideos(count))
             .then((data) => {
                 this.setState({
                     trends: data,
@@ -37,7 +48,7 @@ class Youtube extends Component {
             })
             .catch((err) => {
                 this.setState({isError: true});
-                console.log(err);
+                // console.log(err);
             });
     }
 
@@ -46,7 +57,6 @@ class Youtube extends Component {
     }
 
     youtubeCard() {
-        console.log(this.state.trends)
         return this.state.trends.map((videos, index) =>
             <div key={index} className="card-container">
                 <div className="card" onClick={this.openVideo.bind(videos.id)}>

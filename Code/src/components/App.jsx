@@ -5,8 +5,16 @@ import './App.scss';
 import Youtube from './youtube/Youtube';
 import YoutubePlayer from './youtube/player/Youtube.Player';
 import { appConfig } from '../config';
+import Settings from '../services/settings/Settings';
+const settings=new Settings();
+const {regionCode,videoCategoryId,maxResults}=settings.get();
 
-const config = appConfig;
+const config = {
+    ...appConfig,
+    defaultRegion:regionCode,
+    defaultCategoryId:videoCategoryId,
+    maxVideosToLoad:maxResults
+};
 let store;
 const onChanges = (fn) => {
   if (fn) {
